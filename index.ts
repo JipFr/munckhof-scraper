@@ -3,7 +3,7 @@
 import fetch from "node-fetch";
 
 // Import types
-import { Ride, RideLocation } from "./types";
+import { Ride, RideLocation, States } from "./types";
 
 /** The API ride data */
 interface ApiRide {
@@ -48,20 +48,24 @@ interface MunckhofSession {
 	ForcePsswordChange: boolean;
 }
 
-class RideConverter implements Ride {
-
-	id?: string;
-	from: RideLocation;
-	to: RideLocation;
-	/** Status string, for example, "Still has to be driven" */
-	statusString: number;
-	/** State */
-	state: "planned" | "underway" | "in-progress";
+class RideConverter extends Ride {
 
 	constructor(current: ApiRide) {
+		super();
 		this.id = current.Oid;
-		this.from = this.toLocation(current, "Aanvang")
-		this.to = this.toLocation(current, "Eind")
+		this.from = this.toLocation(current, "Aanvang");
+		this.to = this.toLocation(current, "Eind");
+		this.state = this.getState(current.StatusWeergave);
+	}
+
+	private getState(apiState: string): States {
+		switch(apiState) {
+			case "Moet nog verreden worden":
+				return "planned";
+			default:
+				console.log(apiState);
+				return "unknown";
+		}
 	}
 
 	/** Extract location variables from ride */

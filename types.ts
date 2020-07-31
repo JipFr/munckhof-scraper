@@ -9,13 +9,15 @@ export interface RideLocation {
 	atTime: string;
 }
 
+export type States = "planned" | "underway" | "in-progress" | "done" | "unknown";
+
 /** Individual ride */
-export interface Ride {
+export class Ride {
 	id?: string;
 	from: RideLocation;
 	to: RideLocation;
 	/** Status string, for example, "Still has to be driven" */
 	statusString: number;
 	/** State */
-	state: "planned" | "underway" | "in-progress" | "done";
+	state: States;
 }

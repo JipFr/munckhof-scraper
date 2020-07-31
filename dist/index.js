@@ -1,4 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -49,12 +62,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 // Import modules
 var node_fetch_1 = require("node-fetch");
-var RideConverter = /** @class */ (function () {
+// Import types
+var types_1 = require("./types");
+var RideConverter = /** @class */ (function (_super) {
+    __extends(RideConverter, _super);
     function RideConverter(current) {
-        this.id = current.Oid;
-        this.from = this.toLocation(current, "Aanvang");
-        this.to = this.toLocation(current, "Eind");
+        var _this = _super.call(this) || this;
+        _this.id = current.Oid;
+        _this.from = _this.toLocation(current, "Aanvang");
+        _this.to = _this.toLocation(current, "Eind");
+        _this.state = _this.getState(current.StatusWeergave);
+        return _this;
     }
+    RideConverter.prototype.getState = function (apiState) {
+        switch (apiState) {
+            case "Moet nog verreden worden":
+                return "planned";
+            default:
+                console.log(apiState);
+                return "unknown";
+        }
+    };
     /** Extract location variables from ride */
     RideConverter.prototype.toLocation = function (ride, key) {
         if (key === void 0) { key = "Aanvang"; }
@@ -70,7 +98,7 @@ var RideConverter = /** @class */ (function () {
         return locationObject;
     };
     return RideConverter;
-}());
+}(types_1.Ride));
 var Munckhof = /** @class */ (function () {
     function Munckhof(options) {
         // Set default values
