@@ -62,7 +62,6 @@ var RideConverter = /** @class */ (function () {
         var locationValues = Object.fromEntries(Object.entries(ride)
             .filter(function (keyValue) { return keyValue[0].startsWith(key); })
             .map(function (keyValue) { return [keyValue[0].slice(key.length), keyValue[1]]; }));
-        console.log(locationValues);
         var locationObject = {
             locationName: locationValues.RelatieNaam,
             address: locationValues.Plaats + ", " + locationValues.Straat,

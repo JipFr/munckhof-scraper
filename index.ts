@@ -73,8 +73,6 @@ class RideConverter implements Ride {
 		  .filter(keyValue => keyValue[0].startsWith(key))
 		  .map(keyValue => [keyValue[0].slice(key.length), keyValue[1]] )	
 		);
-		
-		console.log(locationValues);
 
 		let locationObject = {
 			locationName: locationValues.RelatieNaam,
