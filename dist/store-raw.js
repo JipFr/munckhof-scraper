@@ -40,6 +40,8 @@ exports.__esModule = true;
 // Import .env variables
 var dotenv_1 = require("dotenv");
 dotenv_1.config();
+// Import fs
+var fs = require("fs");
 // Import scraper
 var index_1 = require("./index");
 // Create instance of scraper
@@ -50,7 +52,7 @@ var MunckhofInstance = new index_1["default"].Munckhof({
 // This is an async wrapper we'll use to test our scraper
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var rides;
+        var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: 
@@ -59,10 +61,12 @@ function main() {
                 case 1:
                     // Refresh token
                     _a.sent();
-                    return [4 /*yield*/, MunckhofInstance.getRides()];
+                    return [4 /*yield*/, MunckhofInstance.getRawData()];
                 case 2:
-                    rides = _a.sent();
-                    console.log(rides);
+                    data = _a.sent();
+                    console.log(data);
+                    fs.mkdirSync("data");
+                    fs.writeFileSync("data/" + new Date().toISOString(), JSON.stringify(data, null, "\t"));
                     return [2 /*return*/];
             }
         });

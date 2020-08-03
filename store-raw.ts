@@ -3,6 +3,9 @@
 import { config } from "dotenv";
 config();
 
+// Import fs
+import * as fs from "fs";
+
 // Import scraper
 import scrapers from "./index";
 
@@ -17,8 +20,10 @@ const MunckhofInstance = new scrapers.Munckhof({
 async function main() {
 	// Refresh token
 	await MunckhofInstance.updateToken();
-	let rides = await MunckhofInstance.getRides();
-	console.log(rides);
+	let data = await MunckhofInstance.getRawData();
+	
+	if(!fs.existsSync("data/")) fs.mkdirSync("data");
+	fs.writeFileSync(`data/${new Date().toISOString()}.json`, JSON.stringify(data, null, "\t"));
 }
 // Call the testing mobile!
 main();
