@@ -19,6 +19,8 @@ interface ApiRide {
     EindStraat: string; // End result
     Status: number; // Status number
     StatusWeergave: string; // String showing the state, can be used in UI.
+	/** Type this later */
+	Info: any;
 }
 
 /** 
@@ -56,6 +58,7 @@ class RideConverter extends Ride {
 		this.from = this.toLocation(current, "Aanvang");
 		this.to = this.toLocation(current, "Eind");
 		this.state = this.getState(current.StatusWeergave);
+		this.info = current.Info;
 	}
 
 	private getState(apiState: string): States {
@@ -64,7 +67,7 @@ class RideConverter extends Ride {
 				return "planned";
 			default:
 				console.log(apiState);
-				return "unknown";
+				return "unknown: " + apiState;
 		}
 	}
 
@@ -163,6 +166,19 @@ class Munckhof {
 
 		// Get ride data
 		let rideData: ApiRide[] = await rideRes.json();
+		
+		// Get data for each ride
+		let updatedRides = await Promise.all(rideData.map(async ride => {
+			let rideOid = ride.Oid;
+			let url = `${this.APIROOT}/ActueleStatus?dagPlanningRitOpdrachtOid=${rideOid}`;
+			let metaRes = await fetch(url,{
+				headers: this.headers()
+			});
+			let metaData = await metaRes.json();
+			ride.Info = metaData;
+			return ride;
+		}));	
+		
 		return rideData.map(ride => new RideConverter(ride));
 	}
 
@@ -181,7 +197,6 @@ class Munckhof {
 		let rideData: ApiRide[] = await rideRes.json();
 		return rideData;
 	}
-
 
 
 	// PRIVATE METHODS

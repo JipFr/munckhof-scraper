@@ -9,7 +9,7 @@ export interface RideLocation {
 	atTime: string;
 }
 
-export type States = "planned" | "underway" | "in-progress" | "done" | "unknown";
+export type States = "planned" | "underway" | "in-progress" | "done" | "unknown" | string;
 
 /** Individual ride */
 export class Ride {
@@ -20,4 +20,6 @@ export class Ride {
 	statusString: number;
 	/** State */
 	state: States;
+	/** Type this later */
+	info: any;
 }
