@@ -72,15 +72,18 @@ var RideConverter = /** @class */ (function (_super) {
         _this.from = _this.toLocation(current, "Aanvang");
         _this.to = _this.toLocation(current, "Eind");
         _this.state = _this.getState(current.StatusWeergave);
+        _this.info = current.Info;
         return _this;
     }
     RideConverter.prototype.getState = function (apiState) {
         switch (apiState) {
             case "Moet nog verreden worden":
                 return "planned";
+            case "Gearriveerd op bestemming":
+                return "Gearriveerd op bestemming";
             default:
                 console.log(apiState);
-                return "unknown";
+                return "unknown: " + apiState;
         }
     };
     /** Extract location variables from ride */
@@ -147,7 +150,8 @@ var Munckhof = /** @class */ (function () {
     /** Get scheduled */
     Munckhof.prototype.getRides = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var rideRes, rideData;
+            var rideRes, rideData, updatedRides;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, node_fetch_1["default"](this.RIDESURL, {
@@ -162,6 +166,28 @@ var Munckhof = /** @class */ (function () {
                         return [4 /*yield*/, rideRes.json()];
                     case 2:
                         rideData = _a.sent();
+                        return [4 /*yield*/, Promise.all(rideData.map(function (ride) { return __awaiter(_this, void 0, void 0, function () {
+                                var rideOid, url, metaRes, metaData;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            rideOid = ride.Oid;
+                                            url = this.APIROOT + "/ActueleStatus?dagPlanningRitOpdrachtOid=" + rideOid;
+                                            return [4 /*yield*/, node_fetch_1["default"](url, {
+                                                    headers: this.headers()
+                                                })];
+                                        case 1:
+                                            metaRes = _a.sent();
+                                            return [4 /*yield*/, metaRes.json()];
+                                        case 2:
+                                            metaData = _a.sent();
+                                            ride.Info = metaData;
+                                            return [2 /*return*/, ride];
+                                    }
+                                });
+                            }); }))];
+                    case 3:
+                        updatedRides = _a.sent();
                         return [2 /*return*/, rideData.map(function (ride) { return new RideConverter(ride); })];
                 }
             });

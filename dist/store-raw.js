@@ -52,7 +52,7 @@ var MunckhofInstance = new index_1["default"].Munckhof({
 // This is an async wrapper we'll use to test our scraper
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var data;
+        var data, rides;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: 
@@ -64,9 +64,15 @@ function main() {
                     return [4 /*yield*/, MunckhofInstance.getRawData()];
                 case 2:
                     data = _a.sent();
+                    return [4 /*yield*/, MunckhofInstance.getRides()];
+                case 3:
+                    rides = _a.sent();
                     console.log(data);
-                    fs.mkdirSync("data");
-                    fs.writeFileSync("data/" + new Date().toISOString(), JSON.stringify(data, null, "\t"));
+                    console.log(rides);
+                    if (!fs.existsSync("data/"))
+                        fs.mkdirSync("data");
+                    fs.writeFileSync("data/" + new Date().toISOString() + ".json", JSON.stringify(data, null, "\t"));
+                    fs.writeFileSync("data/" + new Date().toISOString() + "-2.json", JSON.stringify(rides, null, "\t"));
                     return [2 /*return*/];
             }
         });

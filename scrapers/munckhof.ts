@@ -65,6 +65,8 @@ class RideConverter extends Ride {
 		switch(apiState) {
 			case "Moet nog verreden worden":
 				return "planned";
+			case "Gearriveerd op bestemming":
+				return "Gearriveerd op bestemming";
 			default:
 				console.log(apiState);
 				return "unknown: " + apiState;
