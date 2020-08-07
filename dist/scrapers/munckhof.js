@@ -80,7 +80,7 @@ var RideConverter = /** @class */ (function (_super) {
             case "Moet nog verreden worden":
                 return "planned";
             case "Gearriveerd op bestemming":
-                return "Gearriveerd op bestemming";
+                return "done";
             default:
                 console.log(apiState);
                 return "unknown: " + apiState;
