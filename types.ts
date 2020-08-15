@@ -9,7 +9,19 @@ export interface RideLocation {
 	atTime: string;
 }
 
-export type States = "planned" | "underway" | "in-progress" | "done" | "unknown" | string;
+/** Ride-specific */
+export interface RideMeta {
+	/** Ride latitude */
+	lat?: string | null;
+	/** Ride longitude */
+	lon?: string | null;
+	/** License plate */
+	licensePlate?: string | null;
+	/** Driver's name */
+	driverName?: string | null;
+}
+
+export type States = "planned" | "underway" | "picked-up" | "done" | "unknown" | string;
 
 /** Individual ride */
 export class Ride {
@@ -22,4 +34,6 @@ export class Ride {
 	state: States;
 	/** Type this later */
 	info: any;
+	/** meta */
+	meta?: RideMeta;
 }

@@ -19,8 +19,29 @@ interface ApiRide {
     EindStraat: string; // End result
     Status: number; // Status number
     StatusWeergave: string; // String showing the state, can be used in UI.
-	/** Type this later */
-	Info: any;
+	Info: ApiRideInfo;
+}
+
+/**
+ * Specific ride API data
+ */
+interface ApiRideInfo {
+	/** Ride ID */
+	DagPlanningRitOpdrachtOid: string;
+	/** Date time string */
+	DatumTijd: string;
+	/** Name of the driving company */
+	VervoerderNaam: string | null;
+	/** Name of the driver */
+	ChauffeurNaam: string | null;
+	/** Lisence plate, obviously */
+	Kenteken: string;
+	/** Current lat */
+	Latitude: string | null;
+	/** Current lon */
+	Longitude: string | null;
+	/** Status */
+	Status: string | null;
 }
 
 /** 
@@ -53,12 +74,22 @@ interface MunckhofSession {
 class RideConverter extends Ride {
 
 	constructor(current: ApiRide) {
+		
 		super();
+		
 		this.id = current.Oid;
 		this.from = this.toLocation(current, "Aanvang");
 		this.to = this.toLocation(current, "Eind");
 		this.state = this.getState(current.StatusWeergave);
-		this.info = current.Info;
+		
+		// Set ride specific data
+		this.meta = {
+			lat: current.Info.Latitude,
+			lon: current.Info.Longitude,
+			licensePlate: current.Info.Kenteken,
+			driverName: current.Info.ChauffeurNaam ?? null
+		}
+
 	}
 
 	private getState(apiState: string): States {
@@ -67,6 +98,8 @@ class RideConverter extends Ride {
 				return "planned";
 			case "Gearriveerd op bestemming":
 				return "done";
+			case "Deelnemer is ingestapt en het vervoer ligt op schema":
+				return "picked-up";
 			default:
 				console.log(apiState);
 				return "unknown: " + apiState;
